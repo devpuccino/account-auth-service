@@ -47,6 +47,7 @@ class LoggingUtil(val objectMapper: ObjectMapper) {
         }
     }
     fun logResponse(
+        startTime: Long,
         response: ServerHttpResponse,
         body: String? = null
     ) {
@@ -55,7 +56,7 @@ class LoggingUtil(val objectMapper: ObjectMapper) {
                     stringBuilder.append(" body=[").append(body).append("]")
                 }
             }.also {
-                logger.info("RESPONSE status=[{}]{}", response.statusCode?.value(), it.toString())
+                logger.info("RESPONSE [{} ms] status=[{}]{}", System.currentTimeMillis()-startTime, response.statusCode?.value(), it.toString())
             }
     }
     private fun buildRequestParameter(parameters: MultiValueMap<String, String>) =

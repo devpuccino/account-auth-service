@@ -34,7 +34,7 @@ class LoggingFilter(private val loggingUtil: LoggingUtil) : WebFilter, Ordered {
             }
 
             override fun getResponse(): ServerHttpResponse {
-                return LoggingResponseDecorator(loggingUtil,super.getResponse())
+                return LoggingResponseDecorator(startTime,loggingUtil,super.getResponse())
             }
         }.let { exchangeDecorator ->
             chain.filter(exchangeDecorator).doFirst {
@@ -66,7 +66,7 @@ class LoggingRequestDecorator(val loggingUtil: LoggingUtil, val request: ServerH
     }
 }
 
-class LoggingResponseDecorator(val loggingUtil: LoggingUtil,private val response: ServerHttpResponse) : ServerHttpResponseDecorator(response) {
+class LoggingResponseDecorator(val startTime:Long,val loggingUtil: LoggingUtil,private val response: ServerHttpResponse) : ServerHttpResponseDecorator(response) {
     private var bodyString: StringBuilder? = null
 
     override fun writeWith(body: Publisher<out DataBuffer>): Mono<Void> {
@@ -77,9 +77,9 @@ class LoggingResponseDecorator(val loggingUtil: LoggingUtil,private val response
                 outputStream.close()
             }
         }).doOnSuccess {
-            loggingUtil.logResponse(response, bodyString?.toString())
+            loggingUtil.logResponse(startTime,response, bodyString?.toString())
         }.doOnError {
-            loggingUtil.logResponse(response)
+            loggingUtil.logResponse(startTime,response)
         }
     }
 
@@ -95,7 +95,7 @@ class LoggingResponseDecorator(val loggingUtil: LoggingUtil,private val response
                     }
                 }.subscribe()
         }.doOnComplete {
-            loggingUtil.logResponse(response, bodyString?.toString())
+            loggingUtil.logResponse(startTime,response, bodyString?.toString())
         })
     }
 }
