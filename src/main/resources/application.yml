@@ -1,0 +1,15 @@
+server:
+  port: 7070
+
+spring:
+  profiles:
+    active: local
+  application:
+    name: account-auth-service
+  webflux:
+    base-path: /account-auth-service
+logging:
+  level:
+    root: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX}|1|%level|${spring.application.name:-}|%X{traceId},%X{spanId},%X{X-Correlation-Id}|${PID:-}|%thread|%logger{100}|%message%n"
