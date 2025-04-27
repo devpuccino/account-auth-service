@@ -24,7 +24,7 @@ import java.nio.channels.Channels
 
 @Component
 class LoggingFilter(private val loggingUtil: LoggingUtil) : WebFilter, Ordered {
-    override fun getOrder(): Int = Integer.MIN_VALUE
+    override fun getOrder(): Int = 2
 
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
         var startTime = 0L
