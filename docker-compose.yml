@@ -1,0 +1,36 @@
+name: "account-system"
+services:
+    account-auth-service:
+      image: account-auth-service
+      environment:
+        LOGSTASH_HOSTS: '["logstash:5044"]'
+      ports:
+        - "11001:8080"
+      command: >
+        bash -c ""
+    logstash:
+      image: devpuccino/logstash
+      environment:
+        - OPENSEARCH_HOSTS=https://opensearch:9200
+        - OPENSEARCH_USER=app_logstash
+        - OPENSEARCH_PASSWORD=AppLogstash#1234
+    opensearch:
+      image: opensearchproject/opensearch:2
+      environment:
+        OPENSEARCH_INITIAL_ADMIN_PASSWORD: "P@ssw0rd#_1234"
+        bootstrap.memory_lock: true
+        OPENSEARCH_JAVA_OPTS: "-Xms1G -Xmx1G"
+        discovery.type: "single-node"
+      volumes:
+        - opensearch-data:/usr/share/opensearch/data
+    opensearch-dashboards:
+      image: opensearchproject/opensearch-dashboards:2
+      container_name: opensearch-dashboards
+      ports:
+        - "5601:5601"
+      environment:
+        OPENSEARCH_HOSTS: '["https://opensearch:9200"]'
+      depends_on:
+        - opensearch
+volumes:
+  opensearch-data:

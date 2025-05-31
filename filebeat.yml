@@ -1,0 +1,15 @@
+filebeat.inputs:
+  - type: stdin
+    enabled: true
+    multiline:
+      pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}'
+      negate: true
+      match: after
+output.logstash:
+  hosts: ["logstash:5044"]
+seccomp:
+  default_action: allow
+  syscalls:
+  - action: allow
+    names:
+    - rseq
