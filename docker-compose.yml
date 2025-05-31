@@ -6,8 +6,6 @@ services:
         LOGSTASH_HOSTS: '["logstash:5044"]'
       ports:
         - "11001:8080"
-      command: >
-        bash -c ""
     logstash:
       image: devpuccino/logstash
       environment:
